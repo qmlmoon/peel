@@ -3,6 +3,7 @@ package eu.stratosphere.peel.core.cli.command.experiment
 import java.lang.{System => Sys}
 import java.nio.file.Paths
 
+import com.typesafe.config.ConfigException.UnresolvedSubstitution
 import eu.stratosphere.peel.core.beans.experiment.ExperimentSuite
 import eu.stratosphere.peel.core.beans.system.{Lifespan, System}
 import eu.stratosphere.peel.core.cli.command.Command
@@ -92,6 +93,7 @@ class SetUp extends Command {
           try {
             n.materialize()
           } catch {
+            case e: UnresolvedSubstitution => throw e
             case e: Throwable => n.fs.rmr(path); throw e // make sure the path is cleaned for the next try
           }
         } else {
